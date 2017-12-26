@@ -32,10 +32,14 @@ class SoftmaxLayer(object):
         e_x = np.exp(x - np.max(x))
         return e_x / e_x.sum(axis=0, keepdims=True)
     
-    def loss(self, softmax_probs, target):
+    
+    def loss(self, softmax_probs, target, eps=1e-15):
         idx = np.argmax(target)
-        return -1 * np.log(softmax_probs[idx])
+        predicted = softmax_probs[idx]
+        predicted = np.clip(predicted, eps, 1 - eps)
+        return -1 * np.log(predicted)
         
+    
     def backprop(self, probabilities, target):
         # Calculate error signal
         error_signal = probabilities - target

@@ -24,8 +24,9 @@ class ReluLayer(object):
         self.previous_layer_activation = input
         # Input multiplied by neuron weights
         activation = np.dot(self.neurons['weights'], input) + self.neurons['bias']
-        # Activation using ReLU transfer function
-        activation = np.maximum(np.zeros(len(activation)), activation)
+        # Activation using Leaky ReLU transfer function
+        #activation = np.maximum(np.zeros(len(activation)), activation)
+        activation = np.maximum(0.05 * activation, activation)
         return activation
     
     def backprop(self, error_signal, is_first_layer):
@@ -45,7 +46,7 @@ class ReluLayer(object):
         else:
             # Propagate error signal to previous layer
             previous_layer_error = np.dot(self.neurons['weights'].T, error_signal)
-            previous_layer_error[self.previous_layer_activation <= 0] = 0
+            previous_layer_error[self.previous_layer_activation <= 0] = 0.05
         
             return previous_layer_error
         
